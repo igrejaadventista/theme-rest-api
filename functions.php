@@ -122,3 +122,20 @@ add_action( 'rest_api_init', function(){
         'callback' => 'pa_get_banner_global',
     ));
 });
+
+add_filter('init', 'processTaxonomies');
+
+function processTaxonomies(){
+    $tax = ['xtt-pa-colecoes', 'xtt-pa-editorias', 'xtt-pa-departamentos', 'xtt-pa-projetos', 'xtt-pa-sedes', 'xtt-pa-owner'];
+
+    foreach ($tax as $t){
+        add_filter( 'rest_'. $t .'_collection_params', 'big_json_change_post_per_page', 10, 1 );
+    }
+}
+
+function big_json_change_post_per_page( $params ) {
+    if ( isset( $params['per_page'] ) ) {
+        $params['per_page']['maximum'] = 300;
+    }
+    return $params;
+}
